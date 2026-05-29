@@ -83,51 +83,48 @@ export default function App() {
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
 
-      {/* Header */}
       <Text style={[styles.title, { color: theme.text }]}>
-        🚀 SST React Showcase
+        React Native
       </Text>
 
       <Text style={{ color: theme.secondary, marginBottom: 10 }}>
-        Small interactive games
+        Example games
       </Text>
 
-      {/* Nav */}
       <View style={styles.nav}>
-        {button('🏠 Home', () => setPage('home'))}
-        {button('🎮 Clicker', () => setPage('clicker'))}
-        {button('⚡ Reaction', () => setPage('reaction'))}
+        {button('Home', () => setPage('home'))}
+        {button('Clicker', () => setPage('clicker'))}
+        {button('Reaction', () => setPage('reaction'))}
         {button('🔢 Guess', () => setPage('guess'))}
-        {button('🎨 Anim', () => setPage('animation'))}
-        {button(darkMode ? '☀️ Light' : '🌙 Dark', () => setDarkMode(!darkMode), '#111827')}
+        {button('Anim', () => setPage('animation'))}
+        {button(darkMode ? 'Light' : 'Dark', () => setDarkMode(!darkMode), '#111827')}
       </View>
 
-      {/* Pages */}
       <View style={{ flex: 1 }}>
 
         {page === 'home' && card(
           <>
-            <Text style={styles.h2}>👋 Welcome</Text>
+            <Text style={styles.h2}>Welcome to SST Inc</Text>
             <Text style={{ color: theme.secondary }}>
-              Expo full-screen fixed version 👍
+              this is a home page
             </Text>
           </>
         )}
 
         {page === 'clicker' && card(
           <>
-            <Text style={styles.h2}>🎮 Clicker</Text>
+            <Text style={styles.h2}>Clicker</Text>
 
             <Text style={{ fontSize: 60, color: theme.text }}>{clicks}</Text>
 
-            {button('CLICK 🔥', () => setClicks(clicks + 1))}
+            {button('CLICK', () => setClicks(clicks + 1))}
             {button('Reset', () => setClicks(0), 'red')}
           </>
         )}
 
         {page === 'reaction' && card(
           <>
-            <Text style={styles.h2}>⚡ Reaction</Text>
+            <Text style={styles.h2}>Reaction</Text>
 
             {!reactionStarted && button('Start', startReactionGame)}
 
@@ -139,7 +136,7 @@ export default function App() {
 
             {reactionReady && (
               <TouchableOpacity style={styles.goBox} onPress={handleReactionPress}>
-                <Text style={{ color: 'white', fontSize: 24 }}>CLICK NOW ⚡</Text>
+                <Text style={{ color: 'white', fontSize: 24 }}>CLICK NOW</Text>
               </TouchableOpacity>
             )}
 
@@ -149,7 +146,7 @@ export default function App() {
 
         {page === 'guess' && card(
           <>
-            <Text style={styles.h2}>🔢 Guess</Text>
+            <Text style={styles.h2}>Guess</Text>
 
             <TextInput
               value={guess}
@@ -168,7 +165,7 @@ export default function App() {
 
         {page === 'animation' && card(
           <>
-            <Text style={styles.h2}>🎨 Animation</Text>
+            <Text style={styles.h2}>Animation</Text>
 
             <View style={styles.center}>
               <View
@@ -190,7 +187,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,              // 🔥 THIS is the key fix
+    flex: 1,            
     padding: 20
   },
   title: {
