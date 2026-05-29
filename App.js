@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -10,9 +11,7 @@ export default function App() {
   const [reactionStartTime, setReactionStartTime] = useState(0);
 
   const [guess, setGuess] = useState('');
-  const [secretNumber, setSecretNumber] = useState(
-    Math.floor(Math.random() * 100) + 1
-  );
+  const [secretNumber, setSecretNumber] = useState(Math.floor(Math.random() * 100) + 1);
   const [guessMessage, setGuessMessage] = useState('');
 
   const [darkMode, setDarkMode] = useState(false);
@@ -38,11 +37,6 @@ export default function App() {
     secondary: darkMode ? '#94a3b8' : '#475569'
   };
 
-  const resetReaction = () => {
-    setReactionStarted(false);
-    setReactionReady(false);
-  };
-
   const startReactionGame = () => {
     setReactionTime('');
     setReactionStarted(true);
@@ -52,7 +46,8 @@ export default function App() {
   const handleReactionPress = () => {
     const time = Date.now() - reactionStartTime;
     setReactionTime(`${time} ms ⚡`);
-    resetReaction();
+    setReactionStarted(false);
+    setReactionReady(false);
   };
 
   const checkGuess = () => {
@@ -73,269 +68,189 @@ export default function App() {
     setGuessMessage('');
   };
 
-  const buttonStyle = {
-    padding: '14px 22px',
-    borderRadius: 14,
-    border: 'none',
-    background: '#2563eb',
-    color: 'white',
-    cursor: 'pointer',
-    fontWeight: 'bold'
-  };
+  const button = (text, onPress, color = '#2563eb') => (
+    <TouchableOpacity onPress={onPress} style={[styles.button, { backgroundColor: color }]}>
+      <Text style={styles.buttonText}>{text}</Text>
+    </TouchableOpacity>
+  );
 
-  const cardStyle = {
-    background: theme.card,
-    padding: 24,
-    borderRadius: 24,
-    marginBottom: 20,
-    boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
-  };
+  const card = (content) => (
+    <View style={[styles.card, { backgroundColor: theme.card }]}>
+      {content}
+    </View>
+  );
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: theme.background,
-        color: theme.text,
-        fontFamily: 'Arial',
-        padding: 20,
-        transition: '0.3s'
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 12
-        }}
-      >
-        <div>
-          <h1>🚀 SST React Native Showcase</h1>
-          <p style={{ color: theme.secondary }}>
-            Small games and interactive demos
-          </p>
-        </div>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
 
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          style={{
-            ...buttonStyle,
-            background: '#111827'
-          }}
-        >
-          {darkMode ? '☀️ Light' : '🌙 Dark'}
-        </button>
-      </div>
+      {/* Header */}
+      <Text style={[styles.title, { color: theme.text }]}>
+        🚀 SST React Showcase
+      </Text>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: 10,
-          flexWrap: 'wrap',
-          marginTop: 20,
-          marginBottom: 20
-        }}
-      >
-        <button style={buttonStyle} onClick={() => setPage('home')}>
-          🏠 Home
-        </button>
+      <Text style={{ color: theme.secondary, marginBottom: 10 }}>
+        Small interactive games
+      </Text>
 
-        <button style={buttonStyle} onClick={() => setPage('clicker')}>
-          🎮 Clicker
-        </button>
+      {/* Nav */}
+      <View style={styles.nav}>
+        {button('🏠 Home', () => setPage('home'))}
+        {button('🎮 Clicker', () => setPage('clicker'))}
+        {button('⚡ Reaction', () => setPage('reaction'))}
+        {button('🔢 Guess', () => setPage('guess'))}
+        {button('🎨 Anim', () => setPage('animation'))}
+        {button(darkMode ? '☀️ Light' : '🌙 Dark', () => setDarkMode(!darkMode), '#111827')}
+      </View>
 
-        <button style={buttonStyle} onClick={() => setPage('reaction')}>
-          ⚡ Reaction
-        </button>
+      {/* Pages */}
+      <View style={{ flex: 1 }}>
 
-        <button style={buttonStyle} onClick={() => setPage('guess')}>
-          🔢 Guess
-        </button>
+        {page === 'home' && card(
+          <>
+            <Text style={styles.h2}>👋 Welcome</Text>
+            <Text style={{ color: theme.secondary }}>
+              Expo full-screen fixed version 👍
+            </Text>
+          </>
+        )}
 
-        <button style={buttonStyle} onClick={() => setPage('animation')}>
-          🎨 Animation
-        </button>
-      </div>
+        {page === 'clicker' && card(
+          <>
+            <Text style={styles.h2}>🎮 Clicker</Text>
 
-      {page === 'home' && (
-        <div style={cardStyle}>
-          <h2>👋 Welcome</h2>
+            <Text style={{ fontSize: 60, color: theme.text }}>{clicks}</Text>
 
-          <p style={{ color: theme.secondary, lineHeight: 1.7 }}>
-            This showcase demonstrates simple interactive apps students can
-            create using React Native concepts.
-          </p>
+            {button('CLICK 🔥', () => setClicks(clicks + 1))}
+            {button('Reset', () => setClicks(0), 'red')}
+          </>
+        )}
 
-          <ul style={{ lineHeight: 2 }}>
-            <li>State management</li>
-            <li>Game logic</li>
-            <li>Animations</li>
-            <li>Interactive UI</li>
-            <li>Cross-platform development</li>
-          </ul>
-        </div>
-      )}
+        {page === 'reaction' && card(
+          <>
+            <Text style={styles.h2}>⚡ Reaction</Text>
 
-      {page === 'clicker' && (
-        <div style={cardStyle}>
-          <h2>🎮 Clicker Game</h2>
+            {!reactionStarted && button('Start', startReactionGame)}
 
-          <div style={{ fontSize: 72, fontWeight: 'bold' }}>
-            {clicks}
-          </div>
+            {reactionStarted && !reactionReady && (
+              <View style={styles.waitBox}>
+                <Text style={{ color: 'white', fontSize: 24 }}>WAIT...</Text>
+              </View>
+            )}
 
-          <button
-            style={{
-              ...buttonStyle,
-              padding: '20px 36px',
-              fontSize: 22
-            }}
-            onClick={() => setClicks(clicks + 1)}
-          >
-            CLICK 🔥
-          </button>
+            {reactionReady && (
+              <TouchableOpacity style={styles.goBox} onPress={handleReactionPress}>
+                <Text style={{ color: 'white', fontSize: 24 }}>CLICK NOW ⚡</Text>
+              </TouchableOpacity>
+            )}
 
-          <div style={{ marginTop: 20 }}>
-            <button
-              style={{
-                ...buttonStyle,
-                background: '#ef4444'
-              }}
-              onClick={() => setClicks(0)}
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      )}
+            <Text style={{ marginTop: 10, fontSize: 18 }}>{reactionTime}</Text>
+          </>
+        )}
 
-      {page === 'reaction' && (
-        <div style={cardStyle}>
-          <h2>⚡ Reaction Speed Test</h2>
+        {page === 'guess' && card(
+          <>
+            <Text style={styles.h2}>🔢 Guess</Text>
 
-          {!reactionStarted && (
-            <button style={buttonStyle} onClick={startReactionGame}>
-              Start
-            </button>
-          )}
-
-          {reactionStarted && !reactionReady && (
-            <div
-              style={{
-                marginTop: 20,
-                padding: 40,
-                borderRadius: 20,
-                background: '#dc2626',
-                color: 'white',
-                textAlign: 'center',
-                fontSize: 28,
-                fontWeight: 'bold'
-              }}
-            >
-              WAIT...
-            </div>
-          )}
-
-          {reactionReady && (
-            <div
-              onClick={handleReactionPress}
-              style={{
-                marginTop: 20,
-                padding: 40,
-                borderRadius: 20,
-                background: '#16a34a',
-                color: 'white',
-                textAlign: 'center',
-                fontSize: 28,
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-            >
-              CLICK NOW ⚡
-            </div>
-          )}
-
-          <h2>{reactionTime}</h2>
-        </div>
-      )}
-
-      {page === 'guess' && (
-        <div style={cardStyle}>
-          <h2>🔢 Number Guessing Game</h2>
-
-          <input
-            type="number"
-            value={guess}
-            onChange={(e) => setGuess(e.target.value)}
-            placeholder="Enter number"
-            style={{
-              padding: 14,
-              borderRadius: 12,
-              border: '2px solid #cbd5e1',
-              width: 250
-            }}
-          />
-
-          <div
-            style={{
-              display: 'flex',
-              gap: 10,
-              marginTop: 20,
-              flexWrap: 'wrap'
-            }}
-          >
-            <button style={buttonStyle} onClick={checkGuess}>
-              Check
-            </button>
-
-            <button
-              style={{
-                ...buttonStyle,
-                background: '#475569'
-              }}
-              onClick={resetGuessGame}
-            >
-              New Number
-            </button>
-          </div>
-
-          <h2>{guessMessage}</h2>
-        </div>
-      )}
-
-      {page === 'animation' && (
-        <div style={cardStyle}>
-          <h2>🎨 Animation Demo</h2>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: 40,
-              marginBottom: 40
-            }}
-          >
-            <div
-              style={{
-                width: bounce ? 180 : 120,
-                height: bounce ? 180 : 120,
-                borderRadius: 999,
-                background: 'linear-gradient(135deg,#2563eb,#7c3aed)',
-                transition: '0.3s ease',
-                transform: bounce ? 'rotate(15deg)' : 'rotate(0deg)'
-              }}
+            <TextInput
+              value={guess}
+              onChangeText={setGuess}
+              keyboardType="numeric"
+              style={styles.input}
+              placeholder="Enter number"
             />
-          </div>
 
-          <button
-            style={buttonStyle}
-            onClick={() => setBounce(!bounce)}
-          >
-            Animate ✨
-          </button>
-        </div>
-      )}
-    </div>
+            {button('Check', checkGuess)}
+            {button('New Number', resetGuessGame, '#475569')}
+
+            <Text style={{ fontSize: 20, marginTop: 10 }}>{guessMessage}</Text>
+          </>
+        )}
+
+        {page === 'animation' && card(
+          <>
+            <Text style={styles.h2}>🎨 Animation</Text>
+
+            <View style={styles.center}>
+              <View
+                style={[
+                  styles.circle,
+                  bounce && { transform: [{ rotate: '15deg' }], width: 160, height: 160 }
+                ]}
+              />
+            </View>
+
+            {button('Animate ✨', () => setBounce(!bounce))}
+          </>
+        )}
+
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,              // 🔥 THIS is the key fix
+    padding: 20
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold'
+  },
+  nav: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginVertical: 10
+  },
+  button: {
+    padding: 12,
+    borderRadius: 10,
+    margin: 4
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold'
+  },
+  card: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 10
+  },
+  h2: {
+    fontSize: 22,
+    marginBottom: 10
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10
+  },
+  center: {
+    alignItems: 'center',
+    marginVertical: 30
+  },
+  circle: {
+    width: 120,
+    height: 120,
+    borderRadius: 100,
+    backgroundColor: '#2563eb'
+  },
+  waitBox: {
+    marginTop: 20,
+    padding: 30,
+    backgroundColor: 'red',
+    borderRadius: 12,
+    alignItems: 'center'
+  },
+  goBox: {
+    marginTop: 20,
+    padding: 30,
+    backgroundColor: 'green',
+    borderRadius: 12,
+    alignItems: 'center'
+  }
+});
