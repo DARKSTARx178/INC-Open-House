@@ -1,17 +1,20 @@
-export default function App() {
-  const { useState, useEffect } = React;
+import React, { useState, useEffect } from 'react';
 
+export default function App() {
   const [page, setPage] = useState('home');
   const [clicks, setClicks] = useState(0);
+
   const [reactionStarted, setReactionStarted] = useState(false);
   const [reactionReady, setReactionReady] = useState(false);
-  const [reactionTime, setReactionTime] = useState(null);
+  const [reactionTime, setReactionTime] = useState('');
   const [reactionStartTime, setReactionStartTime] = useState(0);
+
   const [guess, setGuess] = useState('');
   const [secretNumber, setSecretNumber] = useState(
     Math.floor(Math.random() * 100) + 1
   );
   const [guessMessage, setGuessMessage] = useState('');
+
   const [darkMode, setDarkMode] = useState(false);
   const [bounce, setBounce] = useState(false);
 
@@ -28,28 +31,28 @@ export default function App() {
     return () => clearTimeout(timeout);
   }, [reactionStarted]);
 
+  const theme = {
+    background: darkMode ? '#0f172a' : '#f1f5f9',
+    card: darkMode ? '#1e293b' : '#ffffff',
+    text: darkMode ? '#ffffff' : '#0f172a',
+    secondary: darkMode ? '#94a3b8' : '#475569'
+  };
+
   const resetReaction = () => {
     setReactionStarted(false);
     setReactionReady(false);
-    setReactionTime(null);
   };
 
   const startReactionGame = () => {
-    resetReaction();
+    setReactionTime('');
     setReactionStarted(true);
+    setReactionReady(false);
   };
 
   const handleReactionPress = () => {
-    if (!reactionReady) {
-      setReactionTime('Too early 😭');
-      resetReaction();
-      return;
-    }
-
     const time = Date.now() - reactionStartTime;
     setReactionTime(`${time} ms ⚡`);
-    setReactionStarted(false);
-    setReactionReady(false);
+    resetReaction();
   };
 
   const checkGuess = () => {
@@ -70,45 +73,23 @@ export default function App() {
     setGuessMessage('');
   };
 
-  const theme = {
-    background: darkMode ? '#0f172a' : '#f1f5f9',
-    card: darkMode ? '#1e293b' : 'white',
-    text: darkMode ? 'white' : '#0f172a',
-    secondary: darkMode ? '#94a3b8' : '#475569',
-    accent: '#2563eb'
+  const buttonStyle = {
+    padding: '14px 22px',
+    borderRadius: 14,
+    border: 'none',
+    background: '#2563eb',
+    color: 'white',
+    cursor: 'pointer',
+    fontWeight: 'bold'
   };
 
-  const NavButton = ({ title, target }) => (
-    <button
-      onClick={() => setPage(target)}
-      style={{
-        padding: '12px 18px',
-        borderRadius: 14,
-        border: 'none',
-        background: page === target ? '#2563eb' : '#334155',
-        color: 'white',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: '0.2s'
-      }}
-    >
-      {title}
-    </button>
-  );
-
-  const Card = ({ children }) => (
-    <div
-      style={{
-        background: theme.card,
-        padding: 24,
-        borderRadius: 24,
-        boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-        marginBottom: 20
-      }}
-    >
-      {children}
-    </div>
-  );
+  const cardStyle = {
+    background: theme.card,
+    padding: 24,
+    borderRadius: 24,
+    marginBottom: 20,
+    boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+  };
 
   return (
     <div
@@ -116,398 +97,245 @@ export default function App() {
         minHeight: '100vh',
         background: theme.background,
         color: theme.text,
-        fontFamily: 'Inter, sans-serif',
-        transition: '0.3s',
-        paddingBottom: 40
+        fontFamily: 'Arial',
+        padding: 20,
+        transition: '0.3s'
       }}
     >
-      {/* HEADER */}
       <div
         style={{
-          padding: 28,
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
           flexWrap: 'wrap',
           gap: 12
         }}
       >
         <div>
-          <h1 style={{ margin: 0, fontSize: 40 }}>
-            🚀 SST React Native Showcase
-          </h1>
-          <p style={{ color: theme.secondary, marginTop: 8 }}>
-            Small games + interactive demos built with simple React Native ideas
+          <h1>🚀 SST React Native Showcase</h1>
+          <p style={{ color: theme.secondary }}>
+            Small games and interactive demos
           </p>
         </div>
 
         <button
           onClick={() => setDarkMode(!darkMode)}
           style={{
-            padding: '12px 18px',
-            borderRadius: 14,
-            border: 'none',
-            background: '#111827',
-            color: 'white',
-            cursor: 'pointer',
-            fontWeight: 'bold'
+            ...buttonStyle,
+            background: '#111827'
           }}
         >
-          {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          {darkMode ? '☀️ Light' : '🌙 Dark'}
         </button>
       </div>
 
-      {/* NAVIGATION */}
       <div
         style={{
           display: 'flex',
-          gap: 12,
-          paddingLeft: 28,
-          paddingRight: 28,
-          marginBottom: 28,
-          flexWrap: 'wrap'
+          gap: 10,
+          flexWrap: 'wrap',
+          marginTop: 20,
+          marginBottom: 20
         }}
       >
-        <NavButton title="🏠 Home" target="home" />
-        <NavButton title="🎮 Clicker" target="clicker" />
-        <NavButton title="⚡ Reaction" target="reaction" />
-        <NavButton title="🔢 Guessing" target="guess" />
-        <NavButton title="🎨 Animation" target="animation" />
+        <button style={buttonStyle} onClick={() => setPage('home')}>
+          🏠 Home
+        </button>
+
+        <button style={buttonStyle} onClick={() => setPage('clicker')}>
+          🎮 Clicker
+        </button>
+
+        <button style={buttonStyle} onClick={() => setPage('reaction')}>
+          ⚡ Reaction
+        </button>
+
+        <button style={buttonStyle} onClick={() => setPage('guess')}>
+          🔢 Guess
+        </button>
+
+        <button style={buttonStyle} onClick={() => setPage('animation')}>
+          🎨 Animation
+        </button>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 20 }}>
-        {/* HOME */}
-        {page === 'home' && (
-          <div>
-            <Card>
-              <h2 style={{ marginTop: 0 }}>👋 Welcome to the Demo</h2>
-              <p style={{ lineHeight: 1.7, color: theme.secondary }}>
-                This mini web app demonstrates how students at the School of
-                Science and Technology Singapore can create interactive apps
-                using React Native concepts.
-              </p>
+      {page === 'home' && (
+        <div style={cardStyle}>
+          <h2>👋 Welcome</h2>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                  gap: 18,
-                  marginTop: 24
-                }}
-              >
-                <div
-                  style={{
-                    padding: 20,
-                    borderRadius: 18,
-                    background: '#2563eb',
-                    color: 'white'
-                  }}
-                >
-                  <h3>🎮 Mini Games</h3>
-                  <p>Build games using states, buttons, timers, and logic.</p>
-                </div>
+          <p style={{ color: theme.secondary, lineHeight: 1.7 }}>
+            This showcase demonstrates simple interactive apps students can
+            create using React Native concepts.
+          </p>
 
-                <div
-                  style={{
-                    padding: 20,
-                    borderRadius: 18,
-                    background: '#7c3aed',
-                    color: 'white'
-                  }}
-                >
-                  <h3>📱 App Concepts</h3>
-                  <p>Create apps that work across mobile and web.</p>
-                </div>
+          <ul style={{ lineHeight: 2 }}>
+            <li>State management</li>
+            <li>Game logic</li>
+            <li>Animations</li>
+            <li>Interactive UI</li>
+            <li>Cross-platform development</li>
+          </ul>
+        </div>
+      )}
 
-                <div
-                  style={{
-                    padding: 20,
-                    borderRadius: 18,
-                    background: '#059669',
-                    color: 'white'
-                  }}
-                >
-                  <h3>⚛️ React Native</h3>
-                  <p>Reusable components and modern UI design.</p>
-                </div>
-              </div>
-            </Card>
+      {page === 'clicker' && (
+        <div style={cardStyle}>
+          <h2>🎮 Clicker Game</h2>
 
-            <Card>
-              <h2 style={{ marginTop: 0 }}>💡 What Students Learn</h2>
-
-              <ul
-                style={{
-                  lineHeight: 2,
-                  color: theme.secondary,
-                  paddingLeft: 20
-                }}
-              >
-                <li>State management using useState</li>
-                <li>Interactive UI design</li>
-                <li>Game logic and timers</li>
-                <li>Animations and transitions</li>
-                <li>Cross-platform development</li>
-              </ul>
-            </Card>
+          <div style={{ fontSize: 72, fontWeight: 'bold' }}>
+            {clicks}
           </div>
-        )}
 
-        {/* CLICKER GAME */}
-        {page === 'clicker' && (
-          <Card>
-            <h2 style={{ marginTop: 0 }}>🎮 Clicker Game</h2>
-            <p style={{ color: theme.secondary }}>
-              Simple example using React state updates.
-            </p>
+          <button
+            style={{
+              ...buttonStyle,
+              padding: '20px 36px',
+              fontSize: 22
+            }}
+            onClick={() => setClicks(clicks + 1)}
+          >
+            CLICK 🔥
+          </button>
 
-            <div
+          <div style={{ marginTop: 20 }}>
+            <button
               style={{
-                textAlign: 'center',
-                marginTop: 30
+                ...buttonStyle,
+                background: '#ef4444'
               }}
+              onClick={() => setClicks(0)}
             >
-              <div
-                style={{
-                  fontSize: 72,
-                  fontWeight: 'bold',
-                  marginBottom: 20
-                }}
-              >
-                {clicks}
-              </div>
+              Reset
+            </button>
+          </div>
+        </div>
+      )}
 
-              <button
-                onClick={() => setClicks(clicks + 1)}
-                style={{
-                  padding: '20px 36px',
-                  borderRadius: 20,
-                  border: 'none',
-                  background: '#2563eb',
-                  color: 'white',
-                  fontSize: 22,
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                CLICK ME 🔥
-              </button>
+      {page === 'reaction' && (
+        <div style={cardStyle}>
+          <h2>⚡ Reaction Speed Test</h2>
 
-              <div style={{ marginTop: 20 }}>
-                <button
-                  onClick={() => setClicks(0)}
-                  style={{
-                    padding: '10px 18px',
-                    borderRadius: 12,
-                    border: 'none',
-                    background: '#ef4444',
-                    color: 'white',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Reset
-                </button>
-              </div>
-            </div>
-          </Card>
-        )}
+          {!reactionStarted && (
+            <button style={buttonStyle} onClick={startReactionGame}>
+              Start
+            </button>
+          )}
 
-        {/* REACTION GAME */}
-        {page === 'reaction' && (
-          <Card>
-            <h2 style={{ marginTop: 0 }}>⚡ Reaction Speed Test</h2>
-            <p style={{ color: theme.secondary }}>
-              Measures how fast you react.
-            </p>
-
-            {!reactionStarted && (
-              <button
-                onClick={startReactionGame}
-                style={{
-                  padding: '18px 28px',
-                  borderRadius: 18,
-                  border: 'none',
-                  background: '#2563eb',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontSize: 18,
-                  fontWeight: 'bold'
-                }}
-              >
-                Start Game
-              </button>
-            )}
-
-            {reactionStarted && !reactionReady && (
-              <div
-                style={{
-                  marginTop: 24,
-                  padding: 40,
-                  borderRadius: 20,
-                  background: '#dc2626',
-                  color: 'white',
-                  textAlign: 'center',
-                  fontSize: 28,
-                  fontWeight: 'bold'
-                }}
-              >
-                WAIT...
-              </div>
-            )}
-
-            {reactionReady && (
-              <div
-                onClick={handleReactionPress}
-                style={{
-                  marginTop: 24,
-                  padding: 40,
-                  borderRadius: 20,
-                  background: '#16a34a',
-                  color: 'white',
-                  textAlign: 'center',
-                  fontSize: 28,
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-              >
-                CLICK NOW ⚡
-              </div>
-            )}
-
-            {reactionTime && (
-              <div style={{ marginTop: 24, fontSize: 28, fontWeight: 'bold' }}>
-                {reactionTime}
-              </div>
-            )}
-          </Card>
-        )}
-
-        {/* GUESS GAME */}
-        {page === 'guess' && (
-          <Card>
-            <h2 style={{ marginTop: 0 }}>🔢 Number Guessing Game</h2>
-            <p style={{ color: theme.secondary }}>
-              Guess the secret number between 1 and 100.
-            </p>
-
-            <div style={{ marginTop: 20 }}>
-              <input
-                type="number"
-                value={guess}
-                onChange={(e) => setGuess(e.target.value)}
-                placeholder="Enter a number"
-                style={{
-                  padding: 16,
-                  borderRadius: 14,
-                  border: '2px solid #cbd5e1',
-                  width: '100%',
-                  maxWidth: 300,
-                  fontSize: 16
-                }}
-              />
-            </div>
-
+          {reactionStarted && !reactionReady && (
             <div
               style={{
-                display: 'flex',
-                gap: 12,
                 marginTop: 20,
-                flexWrap: 'wrap'
-              }}
-            >
-              <button
-                onClick={checkGuess}
-                style={{
-                  padding: '14px 22px',
-                  borderRadius: 14,
-                  border: 'none',
-                  background: '#2563eb',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                Check Guess
-              </button>
-
-              <button
-                onClick={resetGuessGame}
-                style={{
-                  padding: '14px 22px',
-                  borderRadius: 14,
-                  border: 'none',
-                  background: '#475569',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                New Number
-              </button>
-            </div>
-
-            <div
-              style={{
-                marginTop: 24,
-                fontSize: 26,
+                padding: 40,
+                borderRadius: 20,
+                background: '#dc2626',
+                color: 'white',
+                textAlign: 'center',
+                fontSize: 28,
                 fontWeight: 'bold'
               }}
             >
-              {guessMessage}
+              WAIT...
             </div>
-          </Card>
-        )}
+          )}
 
-        {/* ANIMATION */}
-        {page === 'animation' && (
-          <Card>
-            <h2 style={{ marginTop: 0 }}>🎨 Simple Animation Demo</h2>
-            <p style={{ color: theme.secondary }}>
-              Interactive animations make apps more engaging.
-            </p>
-
+          {reactionReady && (
             <div
+              onClick={handleReactionPress}
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 40,
-                marginBottom: 40
+                marginTop: 20,
+                padding: 40,
+                borderRadius: 20,
+                background: '#16a34a',
+                color: 'white',
+                textAlign: 'center',
+                fontSize: 28,
+                fontWeight: 'bold',
+                cursor: 'pointer'
               }}
             >
-              <div
-                style={{
-                  width: bounce ? 180 : 120,
-                  height: bounce ? 180 : 120,
-                  borderRadius: 999,
-                  background: 'linear-gradient(135deg,#2563eb,#7c3aed)',
-                  transition: '0.3s ease',
-                  transform: bounce ? 'rotate(15deg)' : 'rotate(0deg)',
-                  boxShadow: '0 10px 30px rgba(37,99,235,0.4)'
-                }}
-              />
+              CLICK NOW ⚡
             </div>
+          )}
 
-            <div style={{ textAlign: 'center' }}>
-              <button
-                onClick={() => setBounce(!bounce)}
-                style={{
-                  padding: '18px 28px',
-                  borderRadius: 18,
-                  border: 'none',
-                  background: '#2563eb',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  fontSize: 18
-                }}
-              >
-                Animate ✨
-              </button>
-            </div>
-          </Card>
-        )}
-      </div>
+          <h2>{reactionTime}</h2>
+        </div>
+      )}
+
+      {page === 'guess' && (
+        <div style={cardStyle}>
+          <h2>🔢 Number Guessing Game</h2>
+
+          <input
+            type="number"
+            value={guess}
+            onChange={(e) => setGuess(e.target.value)}
+            placeholder="Enter number"
+            style={{
+              padding: 14,
+              borderRadius: 12,
+              border: '2px solid #cbd5e1',
+              width: 250
+            }}
+          />
+
+          <div
+            style={{
+              display: 'flex',
+              gap: 10,
+              marginTop: 20,
+              flexWrap: 'wrap'
+            }}
+          >
+            <button style={buttonStyle} onClick={checkGuess}>
+              Check
+            </button>
+
+            <button
+              style={{
+                ...buttonStyle,
+                background: '#475569'
+              }}
+              onClick={resetGuessGame}
+            >
+              New Number
+            </button>
+          </div>
+
+          <h2>{guessMessage}</h2>
+        </div>
+      )}
+
+      {page === 'animation' && (
+        <div style={cardStyle}>
+          <h2>🎨 Animation Demo</h2>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: 40,
+              marginBottom: 40
+            }}
+          >
+            <div
+              style={{
+                width: bounce ? 180 : 120,
+                height: bounce ? 180 : 120,
+                borderRadius: 999,
+                background: 'linear-gradient(135deg,#2563eb,#7c3aed)',
+                transition: '0.3s ease',
+                transform: bounce ? 'rotate(15deg)' : 'rotate(0deg)'
+              }}
+            />
+          </div>
+
+          <button
+            style={buttonStyle}
+            onClick={() => setBounce(!bounce)}
+          >
+            Animate ✨
+          </button>
+        </div>
+      )}
     </div>
   );
 }
