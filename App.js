@@ -163,23 +163,6 @@ export default function App() {
           </>
         )}
 
-        {page === 'animation' && card(
-          <>
-            <Text style={styles.h2}>Animation</Text>
-
-            <View style={styles.center}>
-              <View
-                style={[
-                  styles.circle,
-                  bounce && { transform: [{ rotate: '15deg' }], width: 160, height: 160 }
-                ]}
-              />
-            </View>
-
-            {button('Animate ✨', () => setBounce(!bounce))}
-          </>
-        )}
-
       </View>
     </View>
   );
@@ -192,7 +175,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold'
   },
   nav: {
     flexDirection: 'row',
@@ -207,7 +189,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold'
   },
   card: {
     flex: 1,
