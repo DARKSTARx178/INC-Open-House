@@ -95,8 +95,7 @@ export default function App() {
         {button('Home', () => setPage('home'))}
         {button('Clicker', () => setPage('clicker'))}
         {button('Reaction', () => setPage('reaction'))}
-        {button('🔢 Guess', () => setPage('guess'))}
-        {button('Anim', () => setPage('animation'))}
+        {button('Guess', () => setPage('guess'))}
         {button(darkMode ? 'Light' : 'Dark', () => setDarkMode(!darkMode), '#111827')}
       </View>
 
